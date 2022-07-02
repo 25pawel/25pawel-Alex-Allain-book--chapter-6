@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits>
 
 using namespace std;
 
@@ -11,8 +12,8 @@ static void logIntoSystem(void);
 
 int main()
 {
-    // launchCalculator();
-    logIntoSystem();
+    launchCalculator();
+    // logIntoSystem();
 }
 
 /* Task 2 */
@@ -76,50 +77,92 @@ static int divideNumbers(int num1, int num2)
 
 static void launchCalculator(void)
 {
-    bool isOperatorValid = true;
+    bool isInputValid = false;
     int result = 0;
-    do
-    {
-        char operation;
-        int firstNumber;
-        int secondNumber;
 
-        cout << "Enter first number: ";
-        cin >> firstNumber;
-        cout << "Enter second number: ";
-        cin >> secondNumber;
+    char operation;
+    int firstNumber;
+    int secondNumber;
 
+    do{
+        isInputValid = true;
+        cout << "* * * * * * * * * *\n";
         cout << "Calculator started!\n";
+        cout << "Enter first number: ";
+        // Prevent infinite loop
+        if(!(cin >> firstNumber))
+        {
+            // Get rid failure state
+            cin.clear();
+            // Get rid of bad character from buffer
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+            // Mark that input is invalid
+            isInputValid = false;
+        }
+
+        cout << "Enter second number: ";
+        // Prevent infinite loop
+        if(!(cin >> secondNumber))
+        {
+            // Get rid failure state
+            cin.clear();
+            // Get rid of bad character from buffer
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+            // Mark that input is invalid
+            isInputValid = false;
+        }
+
         cout << "Choose which operation would you like to perform\n";
         cout << "+ \n";
         cout << "- \n";
         cout << "* \n";
         cout << "/ \n";
-        cin >> operation;
 
-        if(operation == '+')
+        if(!(cin >> operation))
         {
-            result = addNumbers(firstNumber, secondNumber);
+            // Get rid failure state
+            cin.clear();
+            // Get rid of bad character from buffer
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+            // Mark that input is invalid
+            isInputValid = false;
         }
-        else if(operation == '-')
+        
+        if(isInputValid)
         {
-            result = subtractNumbers(firstNumber, secondNumber);
-        }
-        else if(operation == '*')
-        {
-            result = multiplyNumbers(firstNumber, secondNumber);
-        }
-        else if(operation == '/')
-        {
-            result = divideNumbers(firstNumber, secondNumber);
+
+            if(operation == '+')
+            {
+                result = addNumbers(firstNumber, secondNumber);
+            }
+            else if(operation == '-')
+            {
+                result = subtractNumbers(firstNumber, secondNumber);
+            }
+            else if(operation == '*')
+            {
+                result = multiplyNumbers(firstNumber, secondNumber);
+            }
+            else if(operation == '/')
+            {
+                result = divideNumbers(firstNumber, secondNumber);
+            }
+            else
+            {
+                cout << "\nBad operation entered. Try one more time\n";
+                isInputValid = false;
+            }
         }
         else
         {
-            cout << "\nBad operation entered. Try one more time\n";
-            isOperatorValid = false;
+            cout << "Entered numbers/operator is invalid. Remember that number must be integer.\n";
+            // Set valid input for next iteration of the loop
         }
 
-    } while(!isOperatorValid);
+    } while(!isInputValid);
 
     cout << "Result is: " << result <<"\n";
 }
